@@ -14,7 +14,7 @@
 - name: add nginx well-known.conf
   copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
 - name: create ssl certificate
-  shell: certbot certonly --webroot --non-interactive --email jared.patrick@gmail.com -d alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
+  shell: certbot certonly --webroot --non-interactive --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
 - name: generate DH group
   shell: if [ ! -f /etc/ssl/certs/dhparam.pem ]; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048; else echo "0"; fi
   register: generated
