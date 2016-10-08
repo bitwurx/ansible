@@ -3,3 +3,29 @@
   yum: name=epel-release
 - name: install certbot
   yum: name=certbot
+- name: enable firewalld http service
+  shell: firewall-cmd --add-service=http
+  register: enabled
+  changed_when: enabled.stdout == 'success'
+- name: enable firewalld https service
+  shell: firewall-cmd --add-service=https
+  register: enabled
+  changed_when: enabled.stdout == 'success'
+- name: add nginx well-known.conf
+  copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
+- name: create ssl certificate
+  shell: certbot certonly --webroot --non-interactive --email jared.patrick@gmail.com -d alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
+- name: generate DH group
+  shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+- name: add nginx ssl.conf
+  copy: src=files/ssl.conf dest=/etc/nginx/conf.d/ssl.conf
+- name: add nginx ssl-redirect.conf
+  copy: src=files/ssl-redirect.conf dest=/etc/nginx/default.d/ssl-redirect.conf
+- name: test nginx configuration
+  shell: nginx -t
+  register: nginx_test
+- name: check nginx test was successful
+  fail: msg="Nginx configuration test failed"
+  when: nginx_test.rc != 0
+- name: restart nginx
+  shell: systemctl restart nginx
