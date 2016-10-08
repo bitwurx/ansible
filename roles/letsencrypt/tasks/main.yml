@@ -14,9 +14,11 @@
 - name: add nginx well-known.conf
   copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
 - name: create ssl certificate
-  shell: certbot certonly --webroot --non-interactive --email jared.patrick@gmail.com -d alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
+  shell: certbot certonly --webroot --non-interactive --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
 - name: generate DH group
-  shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+  shell: if [ ! -f /etc/ssl/certs/dhparam.pem ]; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048; else echo "0"; fi
+  register: generated
+  changed_when: generated.stdout != "0"
 - name: add nginx ssl.conf
   copy: src=files/ssl.conf dest=/etc/nginx/conf.d/ssl.conf
 - name: add nginx ssl-redirect.conf
@@ -29,3 +31,5 @@
   when: nginx_test.rc != 0
 - name: restart nginx
   shell: systemctl restart nginx
+- name: add letsencrypt renew cron job
+  copy: src=files/le_renew_cron dest=/etc/cron.d/le_renew
