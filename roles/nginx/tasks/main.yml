@@ -1,7 +1,20 @@
 ---
-- name: install nginx
-  yum: name=nginx
-- name: enable nginx
-  shell: systemctl enable nginx
-- name: start nginx
-  shell: systemctl start nginx
+- name: start nginx docker container
+  docker_container:
+    image: nginx
+    name: nginx
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /etc/nginx/conf.d:/etc/nginx/conf.d
+    - /etc/nginx/default.d:/etc/nginx/default.d
+    - /etc/letsencrypt:/etc/letsencrypt
+    - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
+    restart_policy: always
+# - name: install nginx
+#   yum: name=nginx
+# - name: enable nginx
+#   shell: systemctl enable nginx
+# - name: start nginx
+#   shell: systemctl start nginx
