@@ -1,3 +1,7 @@
 ---
 - name: install nginx
   yum: name=nginx
+- name: enable nginx
+  shell: systemctl enable nginx
+- name: start nginx
+  shell: systemctl start nginx
