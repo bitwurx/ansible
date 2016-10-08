@@ -1,6 +1,4 @@
 ---
-- name: install epel-release
-  yum: name=epel-release
 - name: install certbot
   yum: name=certbot
 - name: enable firewalld http service
@@ -11,10 +9,16 @@
   shell: firewall-cmd --add-service=https
   register: enabled
   changed_when: enabled.stdout == 'success'
+- name: create nginx conf.d directory
+  file: dest=/etc/nginx/conf.d state=directory
+- name: create nginx default.d directory
+  file: dest=/etc/nginx/default.d state=directory
+- name: create nginx share directory
+  file: dest=/usr/share/nginx/html state=directory
 - name: add nginx well-known.conf
   copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
 - name: create ssl certificate
-  shell: certbot certonly --webroot --non-interactive --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
+  shell: certbot certonly --webroot --non-interactive --agree-tos --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
 - name: generate DH group
   shell: if [ ! -f /etc/ssl/certs/dhparam.pem ]; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048; else echo "0"; fi
   register: generated
@@ -24,12 +28,12 @@
 - name: add nginx ssl-redirect.conf
   copy: src=files/ssl-redirect.conf dest=/etc/nginx/default.d/ssl-redirect.conf
 - name: test nginx configuration
-  shell: nginx -t
+  shell: docker exec -i nginx nginx -t
   register: nginx_test
 - name: check nginx test was successful
   fail: msg="Nginx configuration test failed"
   when: nginx_test.rc != 0
-- name: restart nginx
-  shell: systemctl restart nginx
+- name: reload nginx
+  shell: docker exec -i nginx nginx -s reload
 - name: add letsencrypt renew cron job
   copy: src=files/le_renew_cron dest=/etc/cron.d/le_renew
