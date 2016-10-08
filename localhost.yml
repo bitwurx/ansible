@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  tasks:
+  - name: copy ssh id to operator host
+    with_items: "{{hostvars['operator']['ansible_host']}}"
+    shell: ssh-copy-id root@{{item}}
