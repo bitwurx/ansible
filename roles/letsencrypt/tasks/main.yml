@@ -17,6 +17,15 @@
   file: dest=/usr/share/nginx/html state=directory
 - name: add nginx well-known.conf
   copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
+- name: start temporary nginx
+  docker_container:
+    image: nginx
+    name: nginx
+    ports:
+    - 80:80
+    volumes:
+    - /etc/nginx/default.d/le-well-known.conf:/etc/nginx/default.d/le-well-known.conf
+    - /usr/share/nginx/html/.well-known:/usr/share/nginx/html/.well-known
 - name: create ssl certificate
   shell: certbot certonly --webroot --non-interactive --agree-tos --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
 - name: generate DH group
@@ -27,13 +36,7 @@
   copy: src=files/ssl.conf dest=/etc/nginx/conf.d/ssl.conf
 - name: add nginx ssl-redirect.conf
   copy: src=files/ssl-redirect.conf dest=/etc/nginx/default.d/ssl-redirect.conf
-- name: test nginx configuration
-  shell: docker exec -i nginx nginx -t
-  register: nginx_test
-- name: check nginx test was successful
-  fail: msg="Nginx configuration test failed"
-  when: nginx_test.rc != 0
-- name: reload nginx
-  shell: docker exec -i nginx nginx -s reload
 - name: add letsencrypt renew cron job
   copy: src=files/le_renew_cron dest=/etc/cron.d/le_renew
+- name: remove temporary nginx container
+  shell: docker rm -f nginx

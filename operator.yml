@@ -9,5 +9,5 @@
     pip: name=docker-py version=1.9.0
   roles:
     - docker
-    - nginx
     - letsencrypt
+    - nginx
