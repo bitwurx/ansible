@@ -5,3 +5,7 @@
     name: mariadb
     env:
       MYSQL_ROOT_PASSWORD: IXocx/FJV7jwVQ+DS0RagxeZiUD24Vlrp0LL6UpRfOHx
+    state: started
+    restart_policy: always
+    volumes:
+    - /var/lib/mysql:/var/lib/mysql
