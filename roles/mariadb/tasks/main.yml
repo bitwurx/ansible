@@ -1,0 +1,7 @@
+---
+- name: start mariadb docker container
+  docker_container:
+    image: mariadb
+    name: mariadb
+    env:
+      MYSQL_ROOT_PASSWORD: IXocx/FJV7jwVQ+DS0RagxeZiUD24Vlrp0LL6UpRfOHx

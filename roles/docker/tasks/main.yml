@@ -5,7 +5,8 @@
   lineinfile: dest=/etc/sysconfig/docker regexp='(OPTIONS=\'--selinux-enabled --log-driver=journald\')' line="OPTIONS='--selinux-enabled=false --log-driver=journald'"
 - name: add overlay storage driver
   lineinfile: dest=/etc/sysconfig/docker-storage regexp='(DOCKER_STORAGE_OPTIONS=)' line="DOCKER_STORAGE_OPTIONS=-s overlay"
-- name: enable docker
-  shell: systemctl enable docker
-- name: start docker
-  shell: systemctl start docker
+- name: enable and start docker
+  service:
+    enabled: true
+    state: started
+    name: docker
