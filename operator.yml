@@ -11,3 +11,4 @@
     - docker
     - letsencrypt
     - nginx
+    - mariadb
