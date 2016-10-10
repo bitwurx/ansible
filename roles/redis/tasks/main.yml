@@ -1,0 +1,7 @@
+---
+- name: start redis docker container
+  docker_container:
+    image: redis
+    name: redis
+    restart_policy: always
+    state: started

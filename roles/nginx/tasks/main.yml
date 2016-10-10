@@ -6,9 +6,10 @@
     ports:
     - 80:80
     - 443:443
+    restart_policy: always
+    state: started
     volumes:
     - /etc/nginx/conf.d:/etc/nginx/conf.d
     - /etc/nginx/default.d:/etc/nginx/default.d
     - /etc/letsencrypt:/etc/letsencrypt
     - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
-    restart_policy: always
