@@ -9,23 +9,8 @@
   shell: firewall-cmd --add-service=https
   register: enabled
   changed_when: enabled.stdout == 'success'
-- name: create nginx conf.d directory
-  file: dest=/etc/nginx/conf.d state=directory
-- name: create nginx default.d directory
-  file: dest=/etc/nginx/default.d state=directory
-- name: create nginx share directory
-  file: dest=/usr/share/nginx/html state=directory
 - name: add nginx well-known.conf
   copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
-- name: start temporary nginx
-  docker_container:
-    image: nginx
-    name: nginx
-    ports:
-    - 80:80
-    volumes:
-    - /etc/nginx/default.d/le-well-known.conf:/etc/nginx/default.d/le-well-known.conf
-    - /usr/share/nginx/html/.well-known:/usr/share/nginx/html/.well-known
 - name: create ssl certificate
   shell: certbot certonly --webroot --non-interactive --agree-tos --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
 - name: generate DH group
@@ -38,5 +23,5 @@
   copy: src=files/ssl-redirect.conf dest=/etc/nginx/default.d/ssl-redirect.conf
 - name: add letsencrypt renew cron job
   copy: src=files/le_renew_cron dest=/etc/cron.d/le_renew
-- name: remove temporary nginx container
-  shell: docker rm -f nginx
+- name: restart nginx
+  service: name=nginx state=restarted

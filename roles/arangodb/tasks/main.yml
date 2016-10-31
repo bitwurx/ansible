@@ -1,0 +1,11 @@
+---
+- name: start arangodb docker container
+  docker_container:
+    image: arangodb
+    name: arangodb
+    env:
+      ARANGO_ROOT_PASSWORD: "{{ arango_root_password }}"
+    state: started
+    restart_policy: always
+    volumes:
+    - /srv/arangodb:/var/lib/arangodb3
