@@ -1,0 +1,14 @@
+---
+- hosts: runners
+  post_tasks:
+  - name: reboot the server
+    command: reboot
+    ignore_errors: true
+  roles:
+  - epel-release
+  - pip
+  - docker-py
+  - docker
+  - git
+  - ansible
+  - gitlab-runner

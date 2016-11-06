@@ -2,17 +2,17 @@
 - name: install certbot
   yum: name=certbot
 - name: enable firewalld http service
-  shell: firewall-cmd --add-service=http
+  command: firewall-cmd --add-service=http
   register: enabled
   changed_when: enabled.stdout == 'success'
 - name: enable firewalld https service
-  shell: firewall-cmd --add-service=https
+  command: firewall-cmd --add-service=https
   register: enabled
   changed_when: enabled.stdout == 'success'
 - name: add nginx well-known.conf
   copy: src=files/well-known.conf dest=/etc/nginx/default.d/le-well-known.conf
 - name: create ssl certificate
-  shell: certbot certonly --webroot --non-interactive --agree-tos --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
+  command: certbot certonly --webroot --non-interactive --agree-tos --email jared.patrick@gmail.com -d alicia.bitwurx.com -d www.alicia.bitwurx.com --webroot-path=/usr/share/nginx/html
 - name: generate DH group
   shell: if [ ! -f /etc/ssl/certs/dhparam.pem ]; then openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048; else echo "0"; fi
   register: generated

@@ -1,0 +1,9 @@
+---
+- name: install ansible
+  yum: name=ansible
+- name: copy ssh private key
+  become_user: gitlab-runner
+  copy: src=./files/id_rsa dest=/home/gitlab-runner/.ssh/
+- name: copy ssh public key
+  become_user: gitlab-runner
+  copy: src=./files/id_rsa.pub dest=/home/gitlab-runner/.ssh/

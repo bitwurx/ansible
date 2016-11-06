@@ -1,0 +1,28 @@
+---
+- name: add gitlab-ci-multi-runner rpm
+  shell: curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash
+- name: install gitlab-ci-multi-runner
+  yum: name=gitlab-ci-multi-runner
+- name: check gitlab runners exist
+  shell: cat /etc/gitlab-runner/config.toml | grep 'url = "https://gitlab.com/ci"'
+  register: exists
+  ignore_errors: true
+- name: register gitlab runner
+  command: gitlab-ci-multi-runner register -r {{ gitlab_runner_token }} -u {{ gitlab_runner_url }} -n --executor shell
+  when: exists|failed
+- name: create gitlab-runner .docker directory
+  file: path=/home/gitlab-runner/.docker state=directory
+- name: change /home/gitlab-runner ownership
+  file: path=/home/gitlab-runner owner=gitlab-runner group=gitlab-runner recurse=yes state=directory 
+- name: copy docker config.json
+  command: cp /root/.docker/config.json /home/gitlab-runner/.docker/config.json
+- name: add docker group
+  group: name=docker
+- name: add gitlab-runner to docker user
+  command: usermod -aG docker gitlab-runner
+- name: add password-less sudo
+  lineinfile: dest=/etc/sudoers line='gitlab-runner ALL=(ALL) NOPASSWD:ALL'
+- name: copy ssh private key
+  copy: src=files/id_rsa dest=~/.ssh/id_rsa
+- name: copy ssh public key
+  copy: src=files/id_rsa.pub dest=~/.ssh/id_rsa.pub

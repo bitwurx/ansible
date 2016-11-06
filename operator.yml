@@ -1,11 +1,14 @@
 ---
-- hosts: operator
+- hosts: operators
+  post_tasks:
+  - name: add runner ssh key
+    authorized_key: user=root key="{{ lookup('file', './files/id_rsa.pub') }}"
   roles:
-    - epel-release
-    - pip
-    - docker-py
-    - docker
-    - nginx
-    - letsencrypt
-    - arangodb
-    - redis
+  - epel-release
+  - pip
+  - docker-py
+  - docker
+  - nginx
+  - letsencrypt
+  - arangodb
+  - redis

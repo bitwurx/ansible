@@ -1,2 +1,2 @@
 ansible_host: alicia.bitwurx.com
-ansible_ssh_user: root
+ansible_user: root

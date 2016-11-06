@@ -1,5 +1,12 @@
 [localhost]
 localhost
 
-[operatorservers]
+[operators]
 operator
+
+[runners]
+runner
+
+[webservers:children]
+operators
+runners
