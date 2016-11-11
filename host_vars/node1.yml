@@ -1,0 +1,2 @@
+ansible_host: node1.bitwurx.com
+ansible_user: root

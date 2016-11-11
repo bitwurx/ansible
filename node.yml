@@ -1,5 +1,5 @@
 ---
-- hosts: operators
+- hosts: nodes
   post_tasks:
   - name: add runner ssh key
     authorized_key: user=root key="{{ lookup('file', './files/id_rsa.pub') }}"

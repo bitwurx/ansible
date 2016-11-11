@@ -1,10 +1,10 @@
 server {
     listen 80;
     listen 443 ssl;
-    server_name alicia.bitwurx.com www.alicia.bitwurx.com;
+    server_name {{inventory_hostname}}.bitwurx.com www.{{inventory_hostname}}.bitwurx.com;
 
-    ssl_certificate /etc/letsencrypt/live/alicia.bitwurx.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/alicia.bitwurx.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{{inventory_hostname}}.bitwurx.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{inventory_hostname}}.bitwurx.com/privkey.pem;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_dhparam /etc/ssl/certs/dhparam.pem;

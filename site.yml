@@ -1,3 +1,3 @@
 - include: localhost.yml
-- include: operator.yml
+- include: node.yml
 - include: runner.yml

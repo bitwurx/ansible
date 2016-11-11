@@ -11,9 +11,10 @@
   command: gitlab-ci-multi-runner register -r {{ gitlab_runner_token }} -u {{ gitlab_runner_url }} -n --executor shell
   when: exists|failed
 - name: create gitlab-runner .docker directory
+  become_user: gitlab-runner
   file: path=/home/gitlab-runner/.docker state=directory
 - name: change /home/gitlab-runner ownership
-  file: path=/home/gitlab-runner owner=gitlab-runner group=gitlab-runner recurse=yes state=directory 
+  file: path=/home/gitlab-runner owner=gitlab-runner group=gitlab-runner recurse=yes state=directory
 - name: copy docker config.json
   command: cp /root/.docker/config.json /home/gitlab-runner/.docker/config.json
 - name: add docker group
@@ -22,7 +23,18 @@
   command: usermod -aG docker gitlab-runner
 - name: add password-less sudo
   lineinfile: dest=/etc/sudoers line='gitlab-runner ALL=(ALL) NOPASSWD:ALL'
+- name: create gitlab-runner .ssh directory
+  become: true
+  become_method: su
+  become_user: gitlab-runner
+  file: path=~/.ssh state=directory
 - name: copy ssh private key
-  copy: src=files/id_rsa dest=~/.ssh/id_rsa
+  become: true
+  become_method: su
+  become_user: gitlab-runner
+  copy: src=files/id_rsa dest=~/.ssh/id_rsa mode=600
 - name: copy ssh public key
+  become: true
+  become_method: su
+  become_user: gitlab-runner
   copy: src=files/id_rsa.pub dest=~/.ssh/id_rsa.pub

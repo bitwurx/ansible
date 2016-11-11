@@ -1,0 +1,6 @@
+---
+- name: copy ssh config
+  become: true
+  become_method: su
+  become_user: gitlab-runner
+  template: src=templates/config.j2 dest=~/.ssh/config

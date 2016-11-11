@@ -1,0 +1,2 @@
+ansible_host: runner1.bitwurx.com
+ansible_user: root

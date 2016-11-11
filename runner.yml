@@ -12,3 +12,4 @@
   - git
   - ansible
   - gitlab-runner
+  - ssh-config

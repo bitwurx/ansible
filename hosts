@@ -1,12 +1,12 @@
 [localhost]
 localhost
 
-[operators]
-operator
+[nodes]
+node1
 
 [runners]
-runner
+runner1
 
 [webservers:children]
-operators
+nodes
 runners

@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
   tasks:
-  - name: copy ssh id to operator host
+  - name: copy ssh id to node host
     with_items: "{{ groups.webservers }}"
     command: ssh-copy-id root@{{ hostvars[item]['ansible_host'] }}
